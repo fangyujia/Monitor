@@ -1,34 +1,47 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="AdminFunction">
-    <resultMap id="AdminFunctionMap" type="com.silverbox.entity.auth.AdminFunction">
+<mapper namespace="MenuMapper">
+    <resultMap id="MenuMap" type="com.silverbox.entity.auth.Menu">
         <id column="id" property="id" jdbcType="INTEGER"/>
         <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="description" property="description" jdbcType="VARCHAR"/>
         <result column="url" property="url" jdbcType="VARCHAR"/>
-        <result column="class" property="clazz" jdbcType="VARCHAR"/>
-        <result column="class_sort" property="classSort" jdbcType="INTEGER"/>
-        <result column="description" property="desc" jdbcType="VARCHAR"/>
+        <result column="icon" property="icon" jdbcType="VARCHAR"/>
+        <result column="is_root" property="isRoot" jdbcType="INTEGER"/>
+        <result column="is_leaf" property="isLeaf" jdbcType="INTEGER"/>
+        <result column="parent_id" property="parentId" jdbcType="INTEGER"/>
+        <result column="level" property="level" jdbcType="INTEGER"/>
+        <result column="sort" property="sort" jdbcType="INTEGER"/>
+        <result column="is_new" property="isNew" jdbcType="INTEGER"/>
+        <result column="is_star" property="isStar" jdbcType="INTEGER"/>
+        <result column="project" property="project" jdbcType="VARCHAR"/>
         <result column="is_valid" property="isValid" jdbcType="INTEGER"/>
+        <result column="is_parent" property="isParent" jdbcType="INTEGER"/>
     </resultMap>
 
-    <sql id="Base_Column_List">
-        id, `name`, url, class, class_sort, description, is_valid
+    <sql id="all_column_list">
+        id, `name`, description, url, icon, is_root, is_leaf, parent_id, `level`, sort,
+        is_new, is_star, project, is_valid, is_parent
     </sql>
 
-    <select id="selectByPrimaryKey" resultMap="AdminFunctionMap" parameterType="java.lang.Integer">
+    <select id="findMenusByParentId" resultMap="MenuMap" parameterType="java.util.Map">
         select
-        <include refid="Base_Column_List"/>
-        from box_admin_function
-        where id = #{id,jdbcType=INTEGER}
+        <include refid="all_column_list"/>
+        from box_menu
+        where 1=1
+        <if test="parentId != null">
+            and parent_id = #{parentId}
+        </if>
+        and project = #{project}
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-        delete from box_admin_function
+        delete from box_menu
         where id = #{id,jdbcType=INTEGER}
     </delete>
 
-    <insert id="insert" parameterType="com.silverbox.entity.auth.AdminFunction">
-        insert into box_admin_function (
+    <insert id="insert" parameterType="com.silverbox.entity.auth.Menu">
+        insert into box_menu (
             id,
             name,
             version,
@@ -45,8 +58,8 @@
         )
     </insert>
 
-    <insert id="insertSelective" parameterType="com.silverbox.entity.auth.AdminFunction">
-        insert into box_admin_function
+    <insert id="insertSelective" parameterType="com.silverbox.entity.auth.Menu">
+        insert into box_menu
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 id,
@@ -89,8 +102,8 @@
         </trim>
     </insert>
 
-    <update id="updateByPrimaryKeySelective" parameterType="com.silverbox.entity.auth.AdminFunction">
-        update box_admin_function
+    <update id="updateByPrimaryKeySelective" parameterType="com.silverbox.entity.auth.Menu">
+        update box_menu
         <set>
             <if test="name != null">
                 name = #{name,jdbcType=VARCHAR},
@@ -111,8 +124,8 @@
         where id = #{id,jdbcType=INTEGER}
     </update>
 
-    <update id="updateByPrimaryKey" parameterType="com.silverbox.entity.auth.AdminFunction">
-        update box_admin_function
+    <update id="updateByPrimaryKey" parameterType="com.silverbox.entity.auth.Menu">
+        update box_menu
         set
             name = #{name,jdbcType=VARCHAR},
             version = #{version,jdbcType=INTEGER},
